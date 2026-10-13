@@ -1,0 +1,53 @@
+[gd_scene load_steps=7 format=3 uid="uid://seat_vc3d"]
+
+[ext_resource type="Script" path="res://scripts/theater/Seat.gd" id="1_seat"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_seat"]
+size = Vector3(0.55, 0.9, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_base"]
+size = Vector3(0.55, 0.45, 0.55)
+
+[sub_resource type="BoxMesh" id="BoxMesh_back"]
+size = Vector3(0.55, 0.55, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_highlight"]
+size = Vector3(0.58, 0.05, 0.58)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_area"]
+radius = 1.2
+
+[node name="Seat" type="StaticBody3D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_seat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("BoxShape3D_seat")
+
+[node name="SeatBase" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.225, 0)
+mesh = SubResource("BoxMesh_base")
+
+[node name="SeatBack" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0.24)
+mesh = SubResource("BoxMesh_back")
+
+[node name="SitPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0.05)
+
+[node name="Highlight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+visible = false
+mesh = SubResource("BoxMesh_highlight")
+
+[node name="InteractionArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitoring = true
+monitorable = false
+
+[node name="AreaShape" type="CollisionShape3D" parent="InteractionArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("SphereShape3D_area")

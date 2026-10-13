@@ -1,0 +1,88 @@
+[gd_scene load_steps=2 format=3 uid="uid://mobile_controls_vc3d"]
+
+[ext_resource type="Script" path="res://scripts/ui/MobileControls.gd" id="1_mobile"]
+
+[node name="MobileControls" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_mobile")
+
+[node name="JoystickBase" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 48.0
+offset_top = -200.0
+offset_right = 168.0
+offset_bottom = -80.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+
+[node name="Knob" type="Panel" parent="JoystickBase"]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 35.0
+offset_right = 85.0
+offset_bottom = 85.0
+
+[node name="InteractButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -140.0
+offset_top = -160.0
+offset_right = -40.0
+offset_bottom = -60.0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Sit / Stand"
+
+[node name="PauseButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -120.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 72.0
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+text = "Pause"
+
+[node name="LightsButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -120.0
+offset_top = 88.0
+offset_right = -24.0
+offset_bottom = 136.0
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+text = "Lights"
+
+[node name="VideoButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -120.0
+offset_top = 152.0
+offset_right = -24.0
+offset_bottom = 200.0
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+text = "Video"
+
+[node name="TabletButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = -120.0
+offset_top = 216.0
+offset_right = -24.0
+offset_bottom = 264.0
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
+text = "Tablet"

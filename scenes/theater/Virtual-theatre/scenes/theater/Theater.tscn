@@ -1,0 +1,255 @@
+[gd_scene load_steps=12 format=3 uid="uid://theater_vc3d"]
+
+[ext_resource type="Script" path="res://scripts/theater/Theater.gd" id="1_theater"]
+[ext_resource type="PackedScene" uid="uid://seat_vc3d" path="res://scenes/theater/Seat.tscn" id="2_seat"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(16, 0.2, 22)
+
+[sub_resource type="BoxShape3D" id="BoxShape_floor"]
+size = Vector3(16, 0.2, 22)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(0.3, 6, 22)
+
+[sub_resource type="BoxShape3D" id="BoxShape_wall"]
+size = Vector3(0.3, 6, 22)
+
+[sub_resource type="BoxMesh" id="BoxMesh_backwall"]
+size = Vector3(16, 6, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape_backwall"]
+size = Vector3(16, 6, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ceiling"]
+size = Vector3(16, 0.2, 22)
+
+[sub_resource type="BoxMesh" id="BoxMesh_screen"]
+size = Vector3(10, 5.5, 0.15)
+
+[sub_resource type="StandardMaterial3D" id="Mat_dark"]
+albedo_color = Color(0.12, 0.1, 0.14, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Mat_carpet"]
+albedo_color = Color(0.25, 0.08, 0.1, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="Mat_seat"]
+albedo_color = Color(0.35, 0.12, 0.15, 1)
+roughness = 0.8
+
+[node name="Theater" type="Node3D"]
+script = ExtResource("1_theater")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Mesh" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("BoxMesh_floor")
+surface_material_override/0 = SubResource("Mat_carpet")
+
+[node name="Collision" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+shape = SubResource("BoxShape_floor")
+
+[node name="Ceiling" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.9, 0)
+mesh = SubResource("BoxMesh_ceiling")
+surface_material_override/0 = SubResource("Mat_dark")
+
+[node name="LeftWall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.0, 3, 0)
+collision_layer = 1
+
+[node name="Mesh" type="MeshInstance3D" parent="LeftWall"]
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Mat_dark")
+
+[node name="Collision" type="CollisionShape3D" parent="LeftWall"]
+shape = SubResource("BoxShape_wall")
+
+[node name="RightWall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.0, 3, 0)
+collision_layer = 1
+
+[node name="Mesh" type="MeshInstance3D" parent="RightWall"]
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Mat_dark")
+
+[node name="Collision" type="CollisionShape3D" parent="RightWall"]
+shape = SubResource("BoxShape_wall")
+
+[node name="BackWall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 11.0)
+collision_layer = 1
+
+[node name="Mesh" type="MeshInstance3D" parent="BackWall"]
+mesh = SubResource("BoxMesh_backwall")
+surface_material_override/0 = SubResource("Mat_dark")
+
+[node name="Collision" type="CollisionShape3D" parent="BackWall"]
+shape = SubResource("BoxShape_backwall")
+
+[node name="FrontWall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -11.0)
+collision_layer = 1
+
+[node name="Mesh" type="MeshInstance3D" parent="FrontWall"]
+mesh = SubResource("BoxMesh_backwall")
+surface_material_override/0 = SubResource("Mat_dark")
+
+[node name="Collision" type="CollisionShape3D" parent="FrontWall"]
+shape = SubResource("BoxShape_backwall")
+
+[node name="Screen" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -10.5)
+
+[node name="ScreenMesh" type="MeshInstance3D" parent="Screen"]
+mesh = SubResource("BoxMesh_screen")
+
+[node name="ScreenFrame" type="MeshInstance3D" parent="Screen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
+mesh = SubResource("BoxMesh_screen")
+surface_material_override/0 = SubResource("Mat_dark")
+
+[node name="CinemaLights" type="Node3D" parent="."]
+
+[node name="Light1" type="OmniLight3D" parent="CinemaLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 5.2, -4)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 0.6
+omni_range = 12.0
+shadow_enabled = false
+
+[node name="Light2" type="OmniLight3D" parent="CinemaLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 5.2, -4)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 0.6
+omni_range = 12.0
+shadow_enabled = false
+
+[node name="Light3" type="OmniLight3D" parent="CinemaLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 5.2, 4)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 0.55
+omni_range = 12.0
+shadow_enabled = false
+
+[node name="Light4" type="OmniLight3D" parent="CinemaLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 5.2, 4)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 0.55
+omni_range = 12.0
+shadow_enabled = false
+
+[node name="ScreenSpot" type="SpotLight3D" parent="CinemaLights"]
+transform = Transform3D(1, 0, 0, 0, 0.087, 0.996, 0, -0.996, 0.087, 0, 5.5, -6)
+light_color = Color(0.7, 0.8, 1, 1)
+light_energy = 1.2
+spot_range = 18.0
+spot_angle = 45.0
+shadow_enabled = false
+
+[node name="Ambient" type="DirectionalLight3D" parent="CinemaLights"]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 8, 0)
+light_color = Color(0.4, 0.4, 0.5, 1)
+light_energy = 0.15
+shadow_enabled = false
+
+[node name="AmbiencePlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -18.0
+
+[node name="Seats" type="Node3D" parent="."]
+
+[node name="Row1_Seat1" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 2)
+
+[node name="Row1_Seat2" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 2)
+
+[node name="Row1_Seat3" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 2)
+
+[node name="Row1_Seat4" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 2)
+
+[node name="Row1_Seat5" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 2)
+
+[node name="Row1_Seat6" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 2)
+
+[node name="Row1_Seat7" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 2)
+
+[node name="Row1_Seat8" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 2)
+
+[node name="Row2_Seat1" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 4)
+
+[node name="Row2_Seat2" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 4)
+
+[node name="Row2_Seat3" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 4)
+
+[node name="Row2_Seat4" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 4)
+
+[node name="Row2_Seat5" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 4)
+
+[node name="Row2_Seat6" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 4)
+
+[node name="Row2_Seat7" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 4)
+
+[node name="Row2_Seat8" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 4)
+
+[node name="Row3_Seat1" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 6)
+
+[node name="Row3_Seat2" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 6)
+
+[node name="Row3_Seat3" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 6)
+
+[node name="Row3_Seat4" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 6)
+
+[node name="Row3_Seat5" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 6)
+
+[node name="Row3_Seat6" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 6)
+
+[node name="Row3_Seat7" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 6)
+
+[node name="Row3_Seat8" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 6)
+
+[node name="Row4_Seat1" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 8)
+
+[node name="Row4_Seat2" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 8)
+
+[node name="Row4_Seat3" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 8)
+
+[node name="Row4_Seat4" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 8)
+
+[node name="Row4_Seat5" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 0, 8)
+
+[node name="Row4_Seat6" parent="Seats" instance=ExtResource("2_seat")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 8)

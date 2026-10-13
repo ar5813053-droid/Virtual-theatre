@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://tablet_3d_vc3d"]
+
+[ext_resource type="Script" path="res://scripts/tablet/TabletController.gd" id="1_tab"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+size = Vector3(0.18, 0.012, 0.26)
+
+[sub_resource type="StandardMaterial3D" id="Mat_body"]
+albedo_color = Color(0.08, 0.08, 0.1, 1)
+roughness = 0.45
+metallic = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_screen"]
+size = Vector3(0.16, 0.002, 0.23)
+
+[sub_resource type="StandardMaterial3D" id="Mat_screen"]
+shading_mode = 0
+albedo_color = Color(0.15, 0.25, 0.4, 1)
+emission_enabled = true
+emission = Color(0.2, 0.4, 0.7, 1)
+emission_energy_multiplier = 0.9
+
+[node name="Tablet" type="Node3D"]
+script = ExtResource("1_tab")
+
+[node name="MeshRoot" type="Node3D" parent="."]
+
+[node name="Body" type="MeshInstance3D" parent="MeshRoot"]
+mesh = SubResource("BoxMesh_body")
+surface_material_override/0 = SubResource("Mat_body")
+
+[node name="ScreenQuad" type="MeshInstance3D" parent="MeshRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.007, 0)
+mesh = SubResource("BoxMesh_screen")
+surface_material_override/0 = SubResource("Mat_screen")

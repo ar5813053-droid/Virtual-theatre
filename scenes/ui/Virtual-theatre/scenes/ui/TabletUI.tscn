@@ -1,0 +1,103 @@
+[gd_scene load_steps=2 format=3 uid="uid://tablet_ui_vc3d"]
+
+[ext_resource type="Script" path="res://scripts/tablet/TabletUI.gd" id="1_tui"]
+
+[node name="TabletUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_tui")
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -340.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "No video loaded"
+autowrap_mode = 3
+
+[node name="StatusLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Ready"
+autowrap_mode = 3
+
+[node name="SeekSlider" type="HSlider" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TimeLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "0:00 / --:--"
+horizontal_alignment = 1
+
+[node name="Transport" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="Rewind" type="Button" parent="Panel/VBox/Transport"]
+layout_mode = 2
+text = "-10s"
+
+[node name="PlayPause" type="Button" parent="Panel/VBox/Transport"]
+layout_mode = 2
+text = "Play"
+
+[node name="Forward" type="Button" parent="Panel/VBox/Transport"]
+layout_mode = 2
+text = "+10s"
+
+[node name="Restart" type="Button" parent="Panel/VBox/Transport"]
+layout_mode = 2
+text = "Restart"
+
+[node name="VolRow" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Mute" type="Button" parent="Panel/VBox/VolRow"]
+layout_mode = 2
+text = "Mute"
+
+[node name="Volume" type="HSlider" parent="Panel/VBox/VolRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+value = 1.0
+
+[node name="Actions" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="OpenURL" type="Button" parent="Panel/VBox/Actions"]
+layout_mode = 2
+text = "Enter URL"
+
+[node name="Close" type="Button" parent="Panel/VBox/Actions"]
+layout_mode = 2
+text = "Hide Tablet"
