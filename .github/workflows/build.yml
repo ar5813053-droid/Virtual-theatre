@@ -1,0 +1,215 @@
+name: Build Virtual Cinema 3D
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: "4.3-stable"
+  GODOT_PLATFORM: "linux.x86_64"
+
+jobs:
+  validate:
+    name: Validate & Import Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_PLATFORM }}
+
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot
+          cd ~/godot
+          curl -L -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_${GODOT_PLATFORM}.zip"
+          unzip -o godot.zip
+          chmod +x Godot_v${GODOT_VERSION}_${GODOT_PLATFORM}
+          # Export templates
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION%.*=*}
+          # Godot 4.3-stable templates path uses 4.3.stable
+          TEMPLATE_VER="4.3.stable"
+          mkdir -p ~/.local/share/godot/export_templates/${TEMPLATE_VER}
+          curl -L -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          unzip -o templates.tpz -d /tmp/godot_templates
+          cp -r /tmp/godot_templates/templates/* ~/.local/share/godot/export_templates/${TEMPLATE_VER}/ || true
+          ls -la ~/.local/share/godot/export_templates/${TEMPLATE_VER}/ || true
+
+      - name: Import project (headless)
+        run: |
+          GODOT_BIN=$(find ~/godot -name "Godot_v*" -type f -executable | head -1)
+          echo "Using Godot: $GODOT_BIN"
+          $GODOT_BIN --headless --path . --import --quit-after 30 || true
+          # Validate project.godot exists and main scene is referenced
+          test -f project.godot
+          grep -q 'run/main_scene=' project.godot
+          echo "Project structure validated."
+
+  export-windows:
+    name: Export Windows
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_PLATFORM }}
+
+      - name: Download Godot (if cache miss)
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot
+          cd ~/godot
+          curl -L -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_${GODOT_PLATFORM}.zip"
+          unzip -o godot.zip
+          chmod +x Godot_v${GODOT_VERSION}_${GODOT_PLATFORM}
+          TEMPLATE_VER="4.3.stable"
+          mkdir -p ~/.local/share/godot/export_templates/${TEMPLATE_VER}
+          curl -L -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          unzip -o templates.tpz -d /tmp/godot_templates
+          cp -r /tmp/godot_templates/templates/* ~/.local/share/godot/export_templates/${TEMPLATE_VER}/ || true
+
+      - name: Export Windows build
+        run: |
+          GODOT_BIN=$(find ~/godot -name "Godot_v*" -type f -executable | head -1)
+          mkdir -p build/windows
+          # Import first
+          $GODOT_BIN --headless --path . --import --quit-after 60 || true
+          # Export
+          $GODOT_BIN --headless --path . --export-release "Windows Desktop" build/windows/VirtualCinema3D.exe
+          ls -la build/windows/ || true
+          if [ -f build/windows/VirtualCinema3D.exe ]; then
+            echo "Windows export SUCCESS"
+          else
+            echo "Windows export FAILED - binary not found"
+            # List what was produced for debugging
+            find build -type f 2>/dev/null || true
+            exit 1
+          fi
+
+      - name: Upload Windows artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: VirtualCinema3D-Windows
+          path: build/windows/
+          retention-days: 14
+
+  export-android:
+    name: Export Android
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Cache Godot
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_PLATFORM }}
+
+      - name: Download Godot (if cache miss)
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot
+          cd ~/godot
+          curl -L -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_${GODOT_PLATFORM}.zip"
+          unzip -o godot.zip
+          chmod +x Godot_v${GODOT_VERSION}_${GODOT_PLATFORM}
+          TEMPLATE_VER="4.3.stable"
+          mkdir -p ~/.local/share/godot/export_templates/${TEMPLATE_VER}
+          curl -L -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz"
+          unzip -o templates.tpz -d /tmp/godot_templates
+          cp -r /tmp/godot_templates/templates/* ~/.local/share/godot/export_templates/${TEMPLATE_VER}/ || true
+
+      - name: Configure Android editor settings
+        run: |
+          # Godot looks for editor settings to know Android SDK path
+          mkdir -p ~/.config/godot
+          cat > ~/.config/godot/editor_settings-4.3.tres << 'EOF'
+          [gd_resource type="EditorSettings" format=3]
+          [resource]
+          export/android/android_sdk_path = "/usr/local/lib/android/sdk"
+          export/android/debug_keystore = ""
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          EOF
+          # Also try common SDK locations
+          echo "ANDROID_HOME=${ANDROID_HOME:-}"
+          echo "ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-}"
+          ls /usr/local/lib/android/sdk 2>/dev/null || ls $ANDROID_HOME 2>/dev/null || true
+
+      - name: Export Android APK
+        id: android_export
+        continue-on-error: true
+        run: |
+          GODOT_BIN=$(find ~/godot -name "Godot_v*" -type f -executable | head -1)
+          mkdir -p build/android
+          $GODOT_BIN --headless --path . --import --quit-after 60 || true
+
+          # Attempt export. Godot uses debug keystore by default for unsigned/debug builds
+          # when release keystore is not configured.
+          set +e
+          $GODOT_BIN --headless --path . --export-debug "Android" build/android/VirtualCinema3D.apk 2>&1 | tee android_export.log
+          EXPORT_EXIT=${PIPESTATUS[0]}
+          set -e
+
+          if [ -f build/android/VirtualCinema3D.apk ]; then
+            echo "Android export SUCCESS"
+            echo "success=true" >> $GITHUB_OUTPUT
+          else
+            echo "Android export did not produce APK."
+            echo "=== Export log (last 80 lines) ==="
+            tail -80 android_export.log || true
+            echo "success=false" >> $GITHUB_OUTPUT
+            # Do not fail the whole job hard – document missing setup
+            echo "::warning::Android APK export failed. Common causes: missing Android SDK build-tools, platform, or debug keystore. See docs/ANDROID_SETUP.md"
+          fi
+
+      - name: Upload Android artifact
+        if: steps.android_export.outputs.success == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: VirtualCinema3D-Android
+          path: build/android/
+          retention-days: 14
+
+      - name: Upload Android export log on failure
+        if: steps.android_export.outputs.success != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Android-export-log
+          path: android_export.log
+          retention-days: 7
+          if-no-files-found: ignore

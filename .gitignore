@@ -1,0 +1,40 @@
+# Godot 4
+.godot/
+*.translation
+export.cfg
+export_credentials.cfg
+
+# Builds
+build/
+*.apk
+*.aab
+*.exe
+*.pck
+*.zip
+
+# Keystores & secrets — NEVER commit
+*.keystore
+*.jks
+*.p12
+secrets/
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.import/
+.mono/
+data_*/
+mono_crash.*
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Logs
+*.log
+android_export.log
