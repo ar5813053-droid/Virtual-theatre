@@ -25,9 +25,9 @@ func _update_hints() -> void:
 		return
 	var mobile := OS.has_feature("mobile") or OS.get_name() == "Android"
 	if mobile:
-		hint_label.text = "Joystick move • Drag right side to look • Sit / Stand buttons"
+		hint_label.text = "Joystick • Look (right) • Sit/Stand • Video • Tablet"
 	else:
-		hint_label.text = "WASD move • Mouse look • E / Space interact (sit/stand) • Esc pause • L lights"
+		hint_label.text = "WASD • Mouse look • E sit/stand • Esc pause • L lights • V video URL • T tablet"
 
 
 func show_message(text: String, duration: float = 2.0) -> void:

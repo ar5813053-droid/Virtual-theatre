@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://main_vc3d"]
+[gd_scene load_steps=13 format=3 uid="uid://main_vc3d"]
 
 [ext_resource type="Script" path="res://scripts/Main.gd" id="1_main"]
 [ext_resource type="PackedScene" uid="uid://player_controller_vc3d" path="res://scenes/player/Player.tscn" id="2_player"]
@@ -7,6 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://mobile_controls_vc3d" path="res://scenes/ui/MobileControls.tscn" id="5_mobile"]
 [ext_resource type="PackedScene" uid="uid://pause_menu_vc3d" path="res://scenes/ui/PauseMenu.tscn" id="6_pause"]
 [ext_resource type="PackedScene" uid="uid://hud_vc3d" path="res://scenes/ui/HUD.tscn" id="7_hud"]
+[ext_resource type="Script" path="res://scripts/video/VideoManager.gd" id="8_vm"]
+[ext_resource type="Script" path="res://scripts/video/VideoScreen.gd" id="9_vs"]
+[ext_resource type="PackedScene" uid="uid://url_entry_panel_vc3d" path="res://scenes/ui/URLEntryPanel.tscn" id="10_url"]
+[ext_resource type="PackedScene" uid="uid://tablet_ui_vc3d" path="res://scenes/ui/TabletUI.tscn" id="11_tui"]
+[ext_resource type="PackedScene" uid="uid://tablet_3d_vc3d" path="res://scenes/tablet/Tablet.tscn" id="12_tab"]
 
 [sub_resource type="Environment" id="Environment_main"]
 background_mode = 1
@@ -24,11 +29,19 @@ script = ExtResource("1_main")
 
 [node name="Theater" parent="." instance=ExtResource("3_theater")]
 
+[node name="VideoScreen" type="Node" parent="Theater"]
+script = ExtResource("9_vs")
+
 [node name="Player" parent="." instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 9)
 
 [node name="CinemaManager" type="Node" parent="."]
 script = ExtResource("4_manager")
+
+[node name="VideoManager" type="Node" parent="."]
+script = ExtResource("8_vm")
+
+[node name="Tablet" parent="." instance=ExtResource("12_tab")]
 
 [node name="UI" type="CanvasLayer" parent="."]
 layer = 10
@@ -38,6 +51,10 @@ layer = 10
 [node name="MobileControls" parent="UI" instance=ExtResource("5_mobile")]
 
 [node name="PauseMenu" parent="UI" instance=ExtResource("6_pause")]
+
+[node name="URLEntryPanel" parent="UI" instance=ExtResource("10_url")]
+
+[node name="TabletUI" parent="UI" instance=ExtResource("11_tui")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_main")
